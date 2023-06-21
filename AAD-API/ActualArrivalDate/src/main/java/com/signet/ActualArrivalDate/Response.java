@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Response {
 
-    @JsonProperty("isBase64Encoded")
-    private boolean isBase64Encoded;
     @JsonProperty("statusCode")
     private int statusCode;
     @JsonProperty("headers")
@@ -19,18 +17,7 @@ public class Response {
 
     }
 
-    /**
-     * {
-    "isBase64Encoded": true|false,
-    "statusCode": httpStatusCode,
-    "headers": { "headerName": "headerValue", ... },
-    "multiValueHeaders": { "headerName": ["headerValue", "headerValue2", ...], ... },
-    "body": "..."
-    }
-     */
-
-    public Response(int statusCode, Map<String, String> headers, String body, boolean isBase64Encoded) {
-        this.isBase64Encoded = isBase64Encoded;
+    public Response(int statusCode, Map<String, String> headers, String body) {
         this.statusCode = statusCode;
         this.headers = headers;
         this.body = body;

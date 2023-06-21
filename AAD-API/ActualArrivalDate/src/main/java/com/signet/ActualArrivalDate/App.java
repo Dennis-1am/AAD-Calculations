@@ -8,10 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+// import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+// import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
@@ -61,11 +61,11 @@ public class App implements RequestHandler<Object, Object> {
                 return null;
             }
 
-            context.getLogger().log("Item: " + item.toJSONPretty() + "\n");
-            json = item.toJSONPretty().toString();
+            context.getLogger().log("Item: " + item.toJSON() + "\n");
+            json = item.toJSON();
 
             Map<String, String> headers = Map.of("Content-Type", "application/json");
-            response = new Response(200, headers, json, false);
+            response = new Response(200, headers, json);
 
             json = objectMapper.writeValueAsString(response);
 

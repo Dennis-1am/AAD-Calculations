@@ -1,11 +1,8 @@
 
 package com.signet.ActualArrivalDate;
 
-import org.apache.http.client.CredentialsProvider;
-
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 
 /**

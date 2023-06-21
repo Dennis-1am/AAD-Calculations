@@ -1,7 +1,7 @@
 package com.signet.ActualArrivalDate;
 
 public class Request {
-    private Object reqType; // in our case this will be "GET"
+    private Object reqType; // in our case this will be "POST"
     private Object reqData; // in our case this will be SKU
 
     public Request(){
