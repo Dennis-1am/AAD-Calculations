@@ -31,21 +31,6 @@ public class App implements RequestHandler<Object, Object> {
     private DynamoDB db;
     private ObjectMapper objectMapper;
 
-    // public static void main(String[] args) {
-    // String key = System.getenv("AWS_ACCESS_KEY_ID");
-    // System.out.println("AWS_ACCESS_KEY_ID: " + key);
-
-    // AmazonDynamoDBClientBuilder builder = AmazonDynamoDBClientBuilder.standard();
-    // builder.withCredentials(new EnvironmentVariableCredentialsProvider());
-    // builder.setRegion("us-east-1");
-    // AmazonDynamoDB dybClient = builder.build();
-
-    // DynamoDB dynamoDB = new DynamoDB(dybClient);
-    // Table table = dynamoDB.getTable("Signet-Product-Table");
-    // GetItemSpec spec = new GetItemSpec().withPrimaryKey("SKU", "001001");
-    // System.out.println(table.getItem(spec).toJSONPretty());
-    // }
-
     public App() {
 
         dybClient = DependencyFactory.dynamoDbClient("us-east-1");
@@ -80,7 +65,7 @@ public class App implements RequestHandler<Object, Object> {
             json = item.toJSONPretty().toString();
 
             Map<String, String> headers = Map.of("Content-Type", "application/json");
-            response = new Response(200, headers, json);
+            response = new Response(200, headers, json, false);
 
             json = objectMapper.writeValueAsString(response);
 
@@ -89,9 +74,7 @@ public class App implements RequestHandler<Object, Object> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-
-        return response;
-
+        return json;
     }
 
     public Item queryDB(DynamoDB db, GetItemSpec spec) {
