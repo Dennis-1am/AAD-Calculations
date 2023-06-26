@@ -45,12 +45,13 @@ public class App implements RequestHandler<Object, Object> {
 
         String json = "";
         Response response = null;
+        String ActualArrivalDate = "01/01/1900";
 
         try {
 
             json = objectMapper.writeValueAsString(req);
 
-            Request request = objectMapper.readValue(json, Request.class);
+            Product request = objectMapper.readValue(json, Product.class);
             context.getLogger().log("Request: " + request.toString() + "\n");
 
             GetItemSpec spec = new GetItemSpec().withPrimaryKey("SKU", request.getReqData());
@@ -61,8 +62,15 @@ public class App implements RequestHandler<Object, Object> {
                 return null;
             }
 
+            Map<String, Object> itemMap = item.asMap();
+
+            itemMap.put("Actual Arrival Date", ActualArrivalDate);
+
+            item = Item.fromMap(itemMap);
+
             context.getLogger().log("Item: " + item.toJSON() + "\n");
             json = item.toJSON();
+            
 
             Map<String, String> headers = Map.of("Content-Type", "application/json");
             response = new Response(200, headers, json);
@@ -74,6 +82,7 @@ public class App implements RequestHandler<Object, Object> {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
         return json;
     }
 
