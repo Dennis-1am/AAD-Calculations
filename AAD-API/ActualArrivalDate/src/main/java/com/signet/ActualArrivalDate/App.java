@@ -8,9 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-// import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
-// import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -54,7 +51,7 @@ public class App implements RequestHandler<Object, Object> {
             Product request = objectMapper.readValue(json, Product.class);
             context.getLogger().log("Request: " + request.toString() + "\n");
 
-            GetItemSpec spec = new GetItemSpec().withPrimaryKey("SKU", request.getReqData());
+            GetItemSpec spec = new GetItemSpec().withPrimaryKey("SKU", request.getSKU());
             Item item = queryDB(db, spec);
 
             if (item == null) {
@@ -66,7 +63,12 @@ public class App implements RequestHandler<Object, Object> {
 
             itemMap.put("Actual Arrival Date", ActualArrivalDate);
 
-            item = Item.fromMap(itemMap);
+            String SKU = (String) itemMap.get("SKU");
+            String AAD = (String) itemMap.get("Actual Arrival Date");
+
+            Map<String, Object> responseMap = Map.of("SKU", SKU, "Actual Arrival Date", AAD);
+
+            item = Item.fromMap(responseMap);
 
             context.getLogger().log("Item: " + item.toJSON() + "\n");
             json = item.toJSON();
