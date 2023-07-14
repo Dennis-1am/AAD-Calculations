@@ -1,4 +1,5 @@
 package com.signet.ActualArrivalDate;
+import com.signet.ActualArrivalDate.models.Product;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -42,11 +43,12 @@ public class App implements RequestHandler<Object, Object> {
 
         String json = "";
         Response response = null;
-        String ActualArrivalDate = "01/01/1900";
+        String ActualArrivalDate = "";
 
         try {
 
             json = objectMapper.writeValueAsString(req);
+
 
             Product request = objectMapper.readValue(json, Product.class);
             context.getLogger().log("Request: " + request.toString() + "\n");
@@ -60,6 +62,8 @@ public class App implements RequestHandler<Object, Object> {
             }
 
             Map<String, Object> itemMap = item.asMap();
+
+            
 
             itemMap.put("Actual Arrival Date", ActualArrivalDate);
 
