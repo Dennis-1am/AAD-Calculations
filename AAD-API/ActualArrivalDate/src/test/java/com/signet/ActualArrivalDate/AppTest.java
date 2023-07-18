@@ -21,7 +21,7 @@ public class AppTest {
     public void queryDB() {
         App app = new App();
         GetItemSpec spec = new GetItemSpec().withPrimaryKey("SKU", "001001");
-        Item item = app.queryDB(db, spec);
+        Item item = app.queryDB(db, spec, "ActualArrivalDate");
         Assertions.assertEquals(item, "00100");
     }
 

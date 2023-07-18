@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Upload2DB {
+public class FileUploader {
 
     private static String csvFileLocation = "AAD-API/ActualArrivalDate/src/main/java/com/signet/ActualArrivalDate/dataset/";
     private static AmazonDynamoDB dybClient = DependencyFactory.dynamoDbClient("us-east-1");
@@ -35,11 +35,13 @@ public class Upload2DB {
         System.out.println("Reading Files");
         List<Item> products = toProduct("SignetProductAAD");
         List<Item> vendors = toVendor("AADVendorData");
+
         System.out.println(products.size());
 
         System.out.println("Uploading to DB");
 
         threadedBatchUpload(products, tableNames.get(0), 40);
+        threadedBatchUpload(vendors, tableNames.get(1), 40);
 
     }
 

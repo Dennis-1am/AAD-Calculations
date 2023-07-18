@@ -1,4 +1,4 @@
-package com.signet.ActualArrivalDate;
+package com.signet.ActualArrivalDate.models;
 
 import java.util.Map;
 
