@@ -67,7 +67,7 @@ public class App implements RequestHandler<Object, Object> {
             int Vendor_LeadTime = 0; // initialize Vendor Lead Time to 0 to calculate lead time
             String[] Vendor_Outage_Dates_Start = null; // initialize Vendor Outage to null to calculate lead time
             String[] Vendor_Outage_Dates_End = null; // initialize Vendor Outage to null to calculate lead time
-            int Outage_LeadTime = 0; // initialize Outage Lead Time to 0 to calculate lead time
+            long Outage_LeadTime = 0; // initialize Outage Lead Time to 0 to calculate lead time
             int Shipping_Method_LeadTime = 0; // initialize Shipping Method Lead Time to 0 to calculate lead time
 
 
@@ -113,16 +113,19 @@ public class App implements RequestHandler<Object, Object> {
             // get current date and add lead time to it to get Actual Arrival Date check if it is a weekend if it is add 2 days to it and if it the vendor has a outage date add the number of days elapsed for the outage date to the Actual Arrival Date
 
             LocalDate date = LocalDate.now(); // get current date6j
-            LocalDate ActualArrivalDateLocalDate = date.plusDays(days); // add lead time to current date to get Actual Arrival Date
+            LocalDate ActualArrivalDateLocalDate = date; // add lead time to current date to get Actual Arrival Date
 
-            DayOfWeek dayOfWeek = ActualArrivalDateLocalDate.getDayOfWeek(); // get day of week from Actual Arrival Date
+            context.getLogger().log("Vendor Outage Dates {\n");
 
-            if(dayOfWeek == DayOfWeek.SATURDAY){ // if Actual Arrival Date is a Saturday add 2 days to it
-                ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(2);
+            for(String s : Vendor_Outage_Dates_Start){
+                context.getLogger().log("Vendor Outage Date Start: " + s + "\n"); // log Vendor Outage Date
             }
-            else if(dayOfWeek == DayOfWeek.SUNDAY){ // if Actual Arrival Date is a Sunday add 1 day to it
-                ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(1);
+
+            for(String s : Vendor_Outage_Dates_End){
+                context.getLogger().log("Vendor Outage Date End: " + s + "\n"); // log Vendor Outage Date
             }
+
+            context.getLogger().log("}\n");
 
             // if the vendor has a outage date add the number of days elapsed for the outage date to the Actual Arrival Date
 
@@ -133,16 +136,42 @@ public class App implements RequestHandler<Object, Object> {
                     LocalDate Vendor_Outage_Date_Start = LocalDate.parse(Vendor_Outage_Dates_Start[i]); // convert Vendor Outage Date to LocalDate
                     LocalDate Vendor_Outage_Date_End = LocalDate.parse(Vendor_Outage_Dates_End[i]); // convert Vendor Outage Date to LocalDate
 
+                    context.getLogger().log("Vendor Outage Date Start: " + Vendor_Outage_Date_Start + "\n"); // log Vendor Outage Date
+                    context.getLogger().log("Vendor Outage Date End: " + Vendor_Outage_Date_End + "\n"); // log Vendor Outage Date
+
+                    context.getLogger().log("ActualArrivalDateLocalDate.isAfter " + ActualArrivalDateLocalDate.isAfter(Vendor_Outage_Date_Start)+ "\n"); // log Actual Arrival Date
+                    context.getLogger().log("ActualArrivalDateLocalDate.isBefore " + ActualArrivalDateLocalDate.isBefore(Vendor_Outage_Date_End)+ "\n"); // log Actual Arrival Date
+                    context.getLogger().log("ActualArrivalDateLocalDate " + ActualArrivalDateLocalDate + "\n"); // log Actual Arrival Date
+
+                    
+
                     if(ActualArrivalDateLocalDate.isAfter(Vendor_Outage_Date_Start) && ActualArrivalDateLocalDate.isBefore(Vendor_Outage_Date_End)){ // check if Actual Arrival Date is between Vendor Outage Dates
 
-                        Outage_LeadTime = (int) ActualArrivalDateLocalDate.until(Vendor_Outage_Date_End, ChronoUnit.DAYS); // get number of days elapsed for the outage date
-
+                        Outage_LeadTime = ActualArrivalDateLocalDate.until(Vendor_Outage_Date_End, ChronoUnit.DAYS); // get number of days elapsed for the outage date
+                        context.getLogger().log("Made it to Calculating Outage Date "); // log Outage Lead Time
+                        break;
                     }
 
                 }
             }
 
+            days += Outage_LeadTime; // add number of days elapsed for the outage date to the lead time
+
+            ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(days); // add number of days elapsed for the outage date to the Actual Arrival Date
+
+            DayOfWeek dayOfWeek = ActualArrivalDateLocalDate.getDayOfWeek(); // get day of week from Actual Arrival Date
+
+            if(dayOfWeek == DayOfWeek.SATURDAY){ // if Actual Arrival Date is a Saturday add 2 days to it
+                ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(2);
+            }
+            else if(dayOfWeek == DayOfWeek.SUNDAY){ // if Actual Arrival Date is a Sunday add 1 day to it
+                ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(1);
+            }
+
+
             ActualArrivalDateLocalDate = ActualArrivalDateLocalDate.plusDays(Outage_LeadTime); // add number of days elapsed for the outage date to the Actual Arrival Date
+
+            context.getLogger().log("Outage Lead Time: " + Outage_LeadTime + "\n"); // log Outage Lead Time
 
             ActualArrivalDate = ActualArrivalDateLocalDate.toString(); // convert Actual Arrival Date to string
 
