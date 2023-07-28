@@ -23,4 +23,9 @@ public class Response {
         this.body = body;
     }
 
+    @Override
+    public String toString(){   
+        return "Response [statusCode=" + statusCode + ", headers=" + headers + ", body=" + body + "]";
+    }
+
 }

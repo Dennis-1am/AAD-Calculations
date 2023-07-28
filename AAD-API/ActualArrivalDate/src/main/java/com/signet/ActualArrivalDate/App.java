@@ -11,7 +11,6 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -39,12 +38,15 @@ public class App implements RequestHandler<Object, Object> {
         context.getLogger().log("Input: " + req.toString() + "\n");
 
         String json = "";
-        Response response = null;
+        // Response response = null;
         String ActualArrivalDate = "";
 
         try {
 
             json = objectMapper.writeValueAsString(req);
+            
+            context.getLogger().log("JSON: " + json + "\n");
+
             Request request = objectMapper.readValue(json, Request.class);
 
             String SKU = request.getSKU();
@@ -165,19 +167,18 @@ public class App implements RequestHandler<Object, Object> {
 
             ActualArrivalDate = ActualArrivalDateLocalDate.toString(); // convert Actual Arrival Date to string
 
-            Map<String, String> headers = Map.of("Content-Type", "application/json"); // create headers map for response
-                                                                                      // object
+            context.getLogger().log("Actual Arrival Date: " + ActualArrivalDate + "\n"); // log Actual Arrival Date
 
-            Map<String, Object> responseMap = Map.of("SKU", SKU.toString(), "Actual Arrival Date", ActualArrivalDate.toString(), "Shipping Message", Shipping_Message.toString()); 
-            
-            Item responseItem = Item.fromMap(responseMap); // create response item for response object
-            String jsonResponse = responseItem.toJSON(); // convert response item to json string
+            String responseBody = "{\"ActualArrivalDate\": \"" + ActualArrivalDate + "\", \"ShippingMessage\": \"" + Shipping_Message + "\"}";
 
-            response = new Response(200, headers, ActualArrivalDate); // create response object
+            Map<String, String> headers = Map.of("Content-Type", "application/json", "Access-Control-Allow-Origin", "*", "Access-Control-Allow-Methods", "OPTIONS,POST", "Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token", " Access-Control-Allow-Credentials", "true");
 
-            context.getLogger().log("Response: " + response.toString() + "\n"); // log response
+            Response response = new Response(200, headers, responseBody);
 
-            return jsonResponse; // return json string
+            // convert response to json
+            String responseJson = objectMapper.writeValueAsString(response);
+
+            return responseJson;
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();

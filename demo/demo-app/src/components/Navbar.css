@@ -1,0 +1,19 @@
+#navbar {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    color: rgb(1, 1, 1);
+    background-color: rgba(0, 0, 0, 0.069);
+    font-size: 1.5rem;
+}
+
+#navbar li {
+    list-style: none;
+    margin: 0px 20px;
+}
+
+#navbar li img{
+    object-fit: scale-down;
+    height: 5rem;
+}
